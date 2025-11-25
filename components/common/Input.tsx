@@ -35,7 +35,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                {...props}
                className={`
                   w-full py-3 px-3 text-sm outline-none transition-all duration-200
-                  ${inputClassName}
+                  ${props.className || inputClassName}
                `}
             />
 

@@ -12,12 +12,23 @@ export default async function Page() {
          </p>
       );
    }
-   const initialClientData = await fetchClients(accessToken, 1, 10, "", null, null);
+   const initialClientData = await fetchClients(
+      accessToken,
+      1,
+      10,
+      "",
+      null,
+      null
+   );
    const initialPublisherData = await fetchPublishers(1, 10, "", accessToken);
 
    return (
       <div className="w-full h-full px-10 py-3">
-         <AddProposalContainer initialClientData={initialClientData} initialPublisherData={initialPublisherData}/>
+         <AddProposalContainer
+            accessToken={accessToken}
+            initialClientData={initialClientData}
+            initialPublisherData={initialPublisherData}
+         />
       </div>
    );
 }

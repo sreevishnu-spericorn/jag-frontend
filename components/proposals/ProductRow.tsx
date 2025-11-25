@@ -1,52 +1,66 @@
-// components/proposals/ProductRow.tsx
-// (Code remains the same as provided in your prompt)
-
 import React from "react";
 
 interface ProductRowProps {
+   id: string;
    productName: string;
-   budget: string;
+   budget: number;
    quantity: number;
-   totalAmount: string;
+   total: number;
+   onIncrease: (id: string) => void;
+   onDecrease: (id: string) => void;
+   onRemove: (id: string) => void;
 }
 
 const ProductRow: React.FC<ProductRowProps> = ({
+   id,
    productName,
    budget,
    quantity,
-   totalAmount,
+   total,
+   onIncrease,
+   onDecrease,
+   onRemove,
 }) => {
    return (
       <tr className="border-b border-gray-100">
          <td className="py-3 px-6 text-sm font-medium text-gray-700">
             {productName}
          </td>
-         <td className="py-3 px-6 text-sm text-gray-700">${budget}</td>
+
+         <td className="py-3 px-6 text-sm text-gray-700">₹{budget}</td>
+
          <td className="py-3 px-6 text-sm">
             <div className="flex items-center space-x-2">
                <button
-                  className="h-8 w-8 bg-gray-100 text-gray-500 rounded-md flex items-center justify-center hover:bg-gray-200 transition duration-150"
-                  aria-label="Decrease quantity"
+                  onClick={() => onDecrease(id)}
+                  className="h-8 w-8 bg-gray-100 text-gray-500 rounded-md flex items-center justify-center hover:bg-gray-200 transition"
                >
                   -
                </button>
+
                <input
                   type="number"
                   value={quantity}
                   readOnly
-                  className="w-16 h-8 text-center text-sm border border-gray-300 rounded-md focus:outline-none bg-white"
+                  className="w-16 h-8 text-center text-sm border border-gray-300 rounded-md bg-white"
                />
+
                <button
-                  className="h-8 w-8 bg-gray-100 text-gray-500 rounded-md flex items-center justify-center hover:bg-gray-200 transition duration-150"
-                  aria-label="Increase quantity"
+                  onClick={() => onIncrease(id)}
+                  className="h-8 w-8 bg-gray-100 text-gray-500 rounded-md flex items-center justify-center hover:bg-gray-200 transition"
                >
                   +
                </button>
             </div>
          </td>
-         <td className="py-3 px-6 text-sm text-gray-700">${totalAmount}</td>
+
+         <td className="py-3 px-6 text-sm text-gray-700">₹{total}</td>
+
          <td className="py-3 px-6 text-sm">
-            <button className="bg-red-500 text-white text-sm font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-red-600 transition duration-150">
+            <button
+               onClick={() => onRemove(id)}
+               className="bg-red-500 text-white text-sm font-semibold py-1 px-3 rounded-md shadow-sm hover:bg-red-600 transition"
+            >
                Remove
             </button>
          </td>

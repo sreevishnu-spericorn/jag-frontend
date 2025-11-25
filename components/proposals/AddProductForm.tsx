@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 interface AddProductFormProps {
    onClose: () => void;
    publishersData: PaginatedPublishers;
+   onAddProduct: (product: any) => void;
 }
 
 interface FormValues {
@@ -21,6 +22,7 @@ interface FormValues {
 export default function AddProductForm({
    onClose,
    publishersData,
+   onAddProduct,
 }: AddProductFormProps) {
    const {
       register,
@@ -29,9 +31,7 @@ export default function AddProductForm({
       handleSubmit,
       formState: { errors },
    } = useForm<FormValues>({
-      defaultValues: {
-         quantity: 1,
-      },
+      defaultValues: { quantity: 1 },
    });
 
    const publisherId = watch("publisherId");
@@ -55,34 +55,39 @@ export default function AddProductForm({
    const total = price * quantity;
 
    const increment = () => setValue("quantity", quantity + 1);
-   const decrement = () => {
-      if (quantity > 1) setValue("quantity", quantity - 1);
-   };
+   const decrement = () => quantity > 1 && setValue("quantity", quantity - 1);
 
    const onSubmit = (data: FormValues) => {
       const payload = {
-         ...data,
+         publisherId: data.publisherId,
+         productId: data.productId,
+         productName: selectedProduct?.product.productName,
          price,
+         quantity,
          total,
       };
-      console.log("FINAL PRODUCT PAYLOAD:", payload);
+      onAddProduct(payload);
       onClose();
    };
 
    return (
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+      // <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+      <div>
+         {/* Header */}
          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <h2 className="text-lg font-semibold text-gray-700">Add Product</h2>
-            <Button onClick={onClose}>
+            <Button type="button" onClick={onClose}>
                <X className="h-5 w-5 text-gray-500 hover:text-gray-700" />
             </Button>
          </div>
 
+         {/* Body */}
          <div className="p-6 space-y-6 overflow-y-auto max-h-[70vh]">
-            <DisabledSelect label=" Publisher Tag" disabled>
+            <DisabledSelect label="Publisher Tag" disabled>
                <option>Select Publisher Tag</option>
             </DisabledSelect>
 
+            {/* Publisher */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-600">
@@ -107,11 +112,13 @@ export default function AddProductForm({
                      </p>
                   )}
                </div>
+
                <DisabledSelect label="Products Type" disabled>
                   <option>Select Product Type</option>
                </DisabledSelect>
             </div>
 
+            {/* Product */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-600">
@@ -129,7 +136,6 @@ export default function AddProductForm({
                      }`}
                   >
                      <option value="">Select Product</option>
-
                      {publisherProducts.map((pp) => (
                         <option key={pp.id} value={pp.productId}>
                            {pp.product.productName} — ₹{pp.price}
@@ -143,6 +149,7 @@ export default function AddProductForm({
                   )}
                </div>
 
+               {/* Quantity */}
                <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-600">
                      Quantity
@@ -172,6 +179,7 @@ export default function AddProductForm({
                </div>
             </div>
 
+            {/* Total */}
             <div className="space-y-2">
                <label className="text-sm font-medium text-gray-600">
                   Total
@@ -185,17 +193,25 @@ export default function AddProductForm({
             </div>
          </div>
 
+         {/* Footer */}
          <div className="flex items-center justify-end gap-4 px-6 py-4 border-t border-gray-100">
             <Button
+               type="button"
                onClick={onClose}
                className="px-8 py-2 rounded-full border border-teal-500 text-teal-500 font-semibold"
             >
                Cancel
             </Button>
-            <Button className="px-6 py-2 rounded-full bg-teal-500 text-white font-semibold">
+            <Button
+               onClick={handleSubmit(onSubmit)}
+               type="submit"
+               className="px-6 py-2 rounded-full bg-teal-500 text-white font-semibold"
+            >
                Add Product
             </Button>
          </div>
-      </form>
+         {/* </form>
+          */}
+      </div>
    );
 }

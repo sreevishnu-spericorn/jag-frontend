@@ -25,13 +25,12 @@ export default function Modal({
 
    if (!isOpen) return null;
 
-   // Adjusted styles for the large form
    const modalSizeClasses = {
       lg: "max-w-[1345px] w-full max-h-[90vh] p-0",
       sm: "w-[420px] p-0",
-      md: "max-w-[960px] w-full max-h-[90vh] p-2",
+      md: "max-w-[960px] w-full max-h-[90vh] p-2 py-12",
    };
-
+   
    return (
       <div
          className="
@@ -44,7 +43,7 @@ export default function Modal({
          <div
             className={`
                relative bg-white rounded-[20px] shadow-2xl overflow-hidden animate-[fadeIn_.25s_ease]
-               ${modalSizeClasses[size]} py-13
+               ${modalSizeClasses[size]}
             `}
             onClick={(e) => e.stopPropagation()}
          >

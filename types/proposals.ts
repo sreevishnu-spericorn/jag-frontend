@@ -1,12 +1,8 @@
-// types/proposals.ts
 
 import { Pagination } from "./clients"; // Assuming Pagination is in types/clients.ts
 
-// --- API Response Types ---
 
 export interface ProposalProductDTO {
-   id: string; // ProposalProduct unique ID
-   proposalId: string;
    publisherId: string;
    productId: string;
    quantity: number;
@@ -20,7 +16,7 @@ export interface ProposalListItemDTO {
    proposalName: string;
    proposalStatus: "Pending" | "Approved" | "Rejected" | "Sent" | "Paid";
    paymentStatus: "Unpaid" | "Paid" | "Canceled";
-   proposalEmail: string;
+   ccEmail: string;
    totalAmount: number;
    createdAt: string;
    updatedAt: string;
@@ -55,15 +51,14 @@ export interface ProposalDetailDTO extends ProposalListItemDTO {
 export interface CreateProposalDTO {
    clientId: string;
    proposalName: string;
-   proposalEmail: string;
-   totalAmount: number;
+   ccEmail: string | null;
    products: ProposalProductDTO[]; // Use the simpler DTO for creation
 }
 
 export interface UpdateProposalDTO {
    clientId?: string;
    proposalName?: string;
-   proposalEmail?: string;
+   ccEmail?: string;
    proposalStatus?: "Pending" | "Approved" | "Rejected" | "Sent" | "Paid";
    paymentStatus?: "Unpaid" | "Paid" | "Canceled";
    totalAmount?: number;
