@@ -59,6 +59,7 @@ const AddClientForm = ({
             email: client.email,
             logo: client.logo,
          });
+         console.log("dassadsa");
          setImagePreview(`http://localhost:3457${client.logo}`);
       } else {
          reset({
