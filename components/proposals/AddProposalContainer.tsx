@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { FiHome } from "react-icons/fi";
 import ProductRow from "./ProductRow";
@@ -11,19 +11,21 @@ import { PaginatedPublishers } from "@/types/publishers";
 import { Input } from "../common/Input";
 import { Button } from "../common/Button";
 import { useRouter } from "next/navigation";
-import { createProposal } from "@/lib/api/proposals";
+import { createProposal, updateProposal } from "@/lib/api/proposals";
 import { CreateProposalDTO } from "@/types/proposals";
 
 export interface AddProposalContainerProps {
    accessToken: string | null;
    initialClientData: PaginatedClients;
    initialPublisherData: PaginatedPublishers;
+   editProposal?: any;
 }
 
 export default function AddProposalContainer({
    accessToken,
    initialClientData,
    initialPublisherData,
+   editProposal,
 }: AddProposalContainerProps) {
    const [selectedClient, setSelectedClient] = useState<ClientDTO | null>(null);
    const [isAddProductOpen, setAddProductOpen] = useState(false);
@@ -108,8 +110,10 @@ export default function AddProposalContainer({
 
    const handleSave = async () => {
       if (!validateForm()) return;
+      if (products.length === 0)
+         return alert("Must contain atleast one product");
 
-      const payload: CreateProposalDTO = {
+      const payload = {
          clientId: selectedClient!.id,
          proposalName,
          ccEmail: ccEmail || null,
@@ -123,18 +127,41 @@ export default function AddProposalContainer({
       };
 
       try {
-         if (!accessToken) {
-            console.error("Access Token Missing (Client Auth)");
-            return;
+         if (!accessToken) return;
+
+         if (editProposal) {
+            await updateProposal(editProposal.id, payload, accessToken);
+         } else {
+            await createProposal(payload, accessToken);
          }
 
-         await createProposal(payload, accessToken);
          router.push("/proposals");
          router.refresh();
-      } catch (error: any) {
-         console.error("Failed to create proposal:", error?.message || error);
+      } catch (error) {
+         console.error(error);
       }
    };
+
+   useEffect(() => {
+      if (editProposal) {
+         const matchedClient = initialClientData.clients.find(
+            (c) => c.id === editProposal.clientId
+         );
+
+         setSelectedClient(matchedClient || null);
+         setProposalName(editProposal.proposalName);
+         setCcEmail(editProposal.ccEmail || "");
+         setProducts(
+            editProposal.products.map((p: any) => ({
+               ...p,
+               productName: p.product?.productName || "",
+               price: p.price,
+               quantity: p.quantity,
+               total: p.total,
+            }))
+         );
+      }
+   }, [editProposal, initialClientData]);
 
    return (
       <form
@@ -150,7 +177,6 @@ export default function AddProposalContainer({
             </div>
 
             <div className="flex flex-col space-y-8">
-               {/* Top Section */}
                <div className="bg-white p-6 rounded-[20px]">
                   <div className="p-6 rounded-[20px]">
                      <h2 className="text-xl font-semibold text-gray-800 mb-6">
@@ -158,7 +184,6 @@ export default function AddProposalContainer({
                      </h2>
 
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-                        {/* Client Dropdown */}
                         <div>
                            <select
                               value={selectedClient?.id || ""}
@@ -188,8 +213,6 @@ export default function AddProposalContainer({
                               </p>
                            )}
                         </div>
-
-                        {/* Proposal Name */}
                         <div>
                            <Input
                               type="text"
@@ -210,8 +233,6 @@ export default function AddProposalContainer({
                               </p>
                            )}
                         </div>
-
-                        {/* Email */}
                         <div className="flex items-center">
                            <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 w-full shadow-sm">
                               <p className="text-gray-500 text-sm font-medium mb-1">
@@ -300,7 +321,6 @@ export default function AddProposalContainer({
                      </table>
                   </div>
 
-                  {/* Total & Buttons */}
                   <div className="flex justify-end mt-4 pt-4 border-t border-gray-100">
                      <div className="flex flex-col items-end">
                         <div className="flex items-center space-x-12 mb-6">
@@ -330,7 +350,6 @@ export default function AddProposalContainer({
             </div>
          </div>
 
-         {/* PRODUCT MODAL */}
          <Modal
             isOpen={isAddProductOpen}
             onClose={() => setAddProductOpen(false)}

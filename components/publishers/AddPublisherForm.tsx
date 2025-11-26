@@ -25,7 +25,6 @@ const fileToBase64 = (file: File) =>
       reader.onerror = (error) => reject(error);
    });
 
-
 const DragDropZone = ({
    label,
    format,
@@ -165,6 +164,10 @@ export default function AddPublisherForm({
 
    const handleSubmitForm: SubmitHandler<FormValues> = async (data) => {
       console.log("Submitting Data:", data);
+      if (!data.dynamicProducts || data.dynamicProducts.length === 0) {
+         setLoading(false);
+         return alert("Please add at least one product.");
+      }
       try {
          setLoading(true);
          const mappedProducts = data.dynamicProducts.map((dp) => {
@@ -253,12 +256,12 @@ export default function AddPublisherForm({
                productName: p.product.productName,
                price: p.price,
             }));
-         
+
             reset((prev) => ({
                ...prev,
                dynamicProducts: formatted,
             }));
-         
+
             setLastTempId(formatted.length);
          }
       } else {

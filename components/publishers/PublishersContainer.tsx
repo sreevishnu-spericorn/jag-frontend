@@ -117,7 +117,7 @@ export default function PublishersContainer({
       if (!deleteId) return;
       try {
          setLoading(true);
-         await deletePublisher(deleteId);
+         await deletePublisher(deleteId,accessToken);
          mutate();
          setIsConfirmOpen(false);
          setDeleteId(null);
@@ -130,7 +130,7 @@ export default function PublishersContainer({
 
    const handlePreview = async (id: string) => {
       try {
-         const publisher = await getPublisherById(id);
+         const publisher = await getPublisherById(id,accessToken);
          setPreviewPublisher(publisher);
          setIsPreviewOpen(true);
       } catch (err) {

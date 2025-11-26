@@ -1,13 +1,9 @@
-// components/proposals/ProposalsContainer.tsx
-
 "use client";
 
 import { useState, useCallback } from "react";
 import ProposalsTable from "./ProposalsTable";
 import { ProposalsHeader } from "./ProposalsHeader";
 import Modal from "../common/Modal";
-// Import your Proposal form component here (Placeholder)
-// import AddProposalForm from "./AddProposalForm";
 import { FiHome } from "react-icons/fi";
 import {
    getProposalById,
@@ -25,6 +21,8 @@ import DeleteConfirmModal from "../common/DeleteConfirmModal";
 import useSWR from "swr";
 import { useAuth } from "@/contexts/AuthContext";
 import Pagination from "../common/Pagination";
+import { useRouter } from "next/navigation";
+import PreviewProposal from "./PreviewProposal";
 
 export interface ProposalsContainerProps {
    initialData: PaginatedProposals;
@@ -33,6 +31,8 @@ export interface ProposalsContainerProps {
 export default function ProposalsContainer({
    initialData,
 }: ProposalsContainerProps) {
+   const router = useRouter();
+
    const { accessToken } = useAuth();
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [loading, setLoading] = useState(false);
@@ -46,8 +46,6 @@ export default function ProposalsContainer({
    const [previewProposal, setPreviewProposal] =
       useState<ProposalDetailDTO | null>(null);
    const [search, setSearch] = useState("");
-
-   // Removed date filters for simplicity, as they weren't in your API
 
    const { data, error, isLoading, mutate } = useSWR(
       accessToken ? ["proposals", page, search] : null,
@@ -76,19 +74,8 @@ export default function ProposalsContainer({
       debouncedSearch(value);
    };
 
-   // Removed handleFilter
-
-   const handleEdit = async (id: string) => {
-      if (!accessToken) return;
-      try {
-         setMode("edit");
-         // Fetch full proposal details for editing
-         const proposal = await getProposalById(id, accessToken);
-         setSelectedProposal(proposal);
-         setIsModalOpen(true);
-      } catch (error) {
-         console.error("Failed to load proposal", error);
-      }
+   const handleEdit = (id: string) => {
+      router.push(`/proposals/addProposal?editId=${id}`);
    };
 
    const handleDeleteClick = (id: string) => {
@@ -115,7 +102,6 @@ export default function ProposalsContainer({
    const handlePreview = async (id: string) => {
       if (!accessToken) return;
       try {
-         // Fetch full proposal details for preview
          const proposal = await getProposalById(id, accessToken);
          setPreviewProposal(proposal);
          setIsPreviewOpen(true);
@@ -186,14 +172,14 @@ export default function ProposalsContainer({
          <Modal
             isOpen={isPreviewOpen}
             onClose={() => setIsPreviewOpen(false)}
-            size="md"
+            size="lg"
          >
-            {/* Placeholder for Preview */}
-            {/* <PreviewProposal
-               proposal={previewProposal}
-               onClose={() => setIsPreviewOpen(false)}
-            /> */}
-            <div>Hello</div>
+            {previewProposal && (
+               <PreviewProposal
+                  proposal={previewProposal}
+                  onClose={() => setIsPreviewOpen(false)}
+               />
+            )}
          </Modal>
       </div>
    );

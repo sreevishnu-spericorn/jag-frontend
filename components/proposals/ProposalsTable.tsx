@@ -146,7 +146,9 @@ export default function ProposalsTable({
                                  row.proposalStatus
                               )}`}
                            >
-                              {row.proposalStatus}
+                              {row.proposalStatus === "Paid"
+                                 ? "Active"
+                                 : "Pending"}
                            </span>
                         </td>
 
@@ -172,7 +174,12 @@ export default function ProposalsTable({
 
                            <Button
                               onClick={() => onEdit(row.id)}
-                              className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer"
+                              disabled={row.proposalStatus === "Paid"} // ❌ Disable if Paid
+                              className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer ${
+                                 row.proposalStatus === "Paid"
+                                    ? "opacity-50 cursor-not-allowed hover:border-gray-300 hover:bg-white"
+                                    : ""
+                              }`}
                            >
                               <FiEdit3
                                  className="text-gray-600 hover:text-blue-600"
@@ -188,6 +195,17 @@ export default function ProposalsTable({
                                  className="text-red-500 hover:text-red-600"
                                  size={16}
                               />
+                           </Button>
+
+                           <Button
+                              className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer ${
+                                 row.proposalStatus === "Paid"
+                                    ? "opacity-50 cursor-not-allowed hover:border-gray-300 hover:bg-white"
+                                    : ""
+                              }`}
+                              onClick={() => onPreview(row.id)}
+                           >
+                              Pay
                            </Button>
                         </td>
                      </tr>

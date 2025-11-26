@@ -87,8 +87,8 @@ const OtpForm = () => {
          console.log(res);
 
          if (res?.authToken) {
-            localStorage.removeItem("tempToken"); // tempToken only used here, can keep or remove
-            setAccessToken(res.authToken);        // ✅ store in memory
+            localStorage.removeItem("tempToken"); 
+            setAccessToken(res.authToken);       
             router.push("/dashboard");
          }
       } catch (err: any) {

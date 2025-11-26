@@ -45,12 +45,13 @@ export async function getProposalById(
    });
 
    const result = await res.json();
+   console.log("RAW PROPOSAL RESPONSE:", result);
 
    if (!res.ok) {
       throw new Error(result?.message || "Failed to fetch proposal");
    }
 
-   return result.data; // Assuming the controller wraps the data in { data: ... }
+   return result;
 }
 
 export async function createProposal(

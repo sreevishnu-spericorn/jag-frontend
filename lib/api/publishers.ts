@@ -1,4 +1,3 @@
-import { useAuth } from "@/contexts/AuthContext";
 import { PublisherDTO, PaginatedPublishers } from "@/types/publishers";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -58,8 +57,10 @@ export async function fetchPublishers(
    return res.json();
 }
 
-export async function getPublisherById(id: string): Promise<PublisherDTO> {
-   const { accessToken } = useAuth();
+export async function getPublisherById(
+   id: string,
+   accessToken: string | null
+): Promise<PublisherDTO> {
    const res = await fetch(`${API_URL}/admin/publisherManagement/${id}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
       credentials: "include",
@@ -69,8 +70,7 @@ export async function getPublisherById(id: string): Promise<PublisherDTO> {
    return result;
 }
 
-export async function deletePublisher(id: string) {
-   const { accessToken } = useAuth();
+export async function deletePublisher(id: string, accessToken: string | null) {
    const res = await fetch(`${API_URL}/admin/publisherManagement/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${accessToken}` },

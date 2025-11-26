@@ -13,13 +13,16 @@ import debounce from "lodash.debounce";
 import useSWR from "swr";
 import { useAuth } from "@/contexts/AuthContext";
 import Pagination from "../common/Pagination";
+import { PaginatedPublishers } from "@/types/publishers";
 
 interface ProductsCOntainerProps {
    initialData: PaginatedProducts;
+   publishersData: PaginatedPublishers;
 }
 
 export default function ProductsContainer({
    initialData,
+   publishersData,
 }: ProductsCOntainerProps) {
    const { accessToken } = useAuth();
    const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,6 +32,7 @@ export default function ProductsContainer({
    const [selectedProduct, setSelectedProduct] = useState<ProductDTO | null>(
       null
    );
+   const [customDeleteMessage, setCustomDeleteMessage] = useState("");
    const [search, setSearch] = useState("");
    const [loading, setLoading] = useState(false);
    const [mode, setMode] = useState<"add" | "edit">("add");
@@ -44,6 +48,13 @@ export default function ProductsContainer({
       setIsModalOpen(false);
       setSelectedProduct(null);
       setMode("add");
+   };
+
+   const findPublishersUsingProduct = (productId: string) => {
+      if (!publishersData?.publishers) return [];
+      return publishersData.publishers.filter((publisher) =>
+         publisher.products?.some((p: any) => p.productId === productId)
+      );
    };
 
    const { data, isLoading, mutate } = useSWR(
@@ -86,10 +97,25 @@ export default function ProductsContainer({
    };
 
    const handleDeleteClick = (id: string) => {
+      const linkedPublishers = findPublishersUsingProduct(id);
+
+      if (linkedPublishers.length > 0) {
+         const publisherNames = linkedPublishers
+            .map((p) => p.publisherName)
+            .join(", ");
+
+         setCustomDeleteMessage(
+            `The following publishers use this product: ${publisherNames}. Are you sure you want to delete it?`
+         );
+      } else {
+         setCustomDeleteMessage(
+            "Are you sure you want to delete this product? This action cannot be undone."
+         );
+      }
+
       setDeleteId(id);
       setIsConfirmOpen(true);
    };
-
    const handleConfirmDelete = async () => {
       if (!deleteId) return;
       setLoading(true);
@@ -158,7 +184,7 @@ export default function ProductsContainer({
             <DeleteConfirmModal
                isOpen={isConfirmOpen}
                title="Delete Product"
-               description="Are you sure you want to delete this product? This action cannot be undone."
+               description={customDeleteMessage}
                loading={loading}
                onClose={() => setIsConfirmOpen(false)}
                onConfirm={handleConfirmDelete}

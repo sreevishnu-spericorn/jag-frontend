@@ -1,6 +1,4 @@
-
 import { Pagination } from "./clients"; // Assuming Pagination is in types/clients.ts
-
 
 export interface ProposalProductDTO {
    publisherId: string;
@@ -58,7 +56,7 @@ export interface CreateProposalDTO {
 export interface UpdateProposalDTO {
    clientId?: string;
    proposalName?: string;
-   ccEmail?: string;
+   ccEmail?: string | null;
    proposalStatus?: "Pending" | "Approved" | "Rejected" | "Sent" | "Paid";
    paymentStatus?: "Unpaid" | "Paid" | "Canceled";
    totalAmount?: number;

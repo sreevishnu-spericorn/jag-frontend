@@ -71,9 +71,7 @@ export default function AddProductForm({
    };
 
    return (
-      // <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       <div>
-         {/* Header */}
          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <h2 className="text-lg font-semibold text-gray-700">Add Product</h2>
             <Button type="button" onClick={onClose}>

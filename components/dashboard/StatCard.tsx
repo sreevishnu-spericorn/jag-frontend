@@ -6,7 +6,7 @@ const StatCard = ({
    icon: Icon,
 }: {
    title: string;
-   value: string;
+   value: number | string;
    icon: React.ElementType;
 }) => (
    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 min-w-[200px]">
