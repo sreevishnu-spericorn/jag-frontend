@@ -8,6 +8,7 @@ import { Button } from "../common/Button";
 import { createClient, updateClient } from "@/lib/api/clients";
 import { FormClientDTO } from "@/types/clients";
 import { ClientDTO, CreateClientDTO } from "@/types/clients";
+import { toast } from "react-toastify";
 
 interface FormValues {
    accountName: string;
@@ -94,13 +95,14 @@ const AddClientForm = ({
          if (mode === "edit" && client?.id) {
             await updateClient(client.id, accessToken, clientData);
             console.log(clientData);
+            toast.info("Client details Updated");
          } else {
             const createPayload: CreateClientDTO = {
                ...clientData,
                logo: selectedFile || undefined,
             };
-
             await createClient(createPayload, accessToken);
+            toast.success("Client added successflly");
          }
 
          onClientCreated();

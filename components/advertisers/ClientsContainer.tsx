@@ -14,6 +14,7 @@ import DeleteConfirmModal from "../common/DeleteConfirmModal";
 import useSWR from "swr";
 import { useAuth } from "@/contexts/AuthContext";
 import Pagination from "../common/Pagination";
+import { toast } from "react-toastify";
 
 export interface ClientsContainerProps {
    initialData: PaginatedClients;
@@ -112,6 +113,7 @@ export default function ClientsContainer({
          console.error("Delete failed", error);
       } finally {
          setLoading(false);
+         toast.success("Client Deleted Successfully");
       }
    };
 

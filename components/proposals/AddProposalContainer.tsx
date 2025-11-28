@@ -13,6 +13,7 @@ import { Button } from "../common/Button";
 import { useRouter } from "next/navigation";
 import { createProposal, updateProposal } from "@/lib/api/proposals";
 import { CreateProposalDTO } from "@/types/proposals";
+import { toast } from "react-toastify";
 
 export interface AddProposalContainerProps {
    accessToken: string | null;
@@ -111,7 +112,7 @@ export default function AddProposalContainer({
    const handleSave = async () => {
       if (!validateForm()) return;
       if (products.length === 0)
-         return alert("Must contain atleast one product");
+         return toast.info("Must contain atleast one product");
 
       const payload = {
          clientId: selectedClient!.id,

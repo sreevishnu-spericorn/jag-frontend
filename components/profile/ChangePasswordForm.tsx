@@ -5,6 +5,8 @@ import { changePassword } from "@/lib/api/profile";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../common/Input";
+import { FiHome } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 interface PasswordFormData {
    currentPassword: string;
@@ -33,50 +35,44 @@ export default function ChangePasswordForm() {
       const { confirmPassword, ...rest } = data;
       try {
          const res = await changePassword(rest, accessToken);
-
-         const result = await res.json();
-
-         if (!res.ok) {
-            throw new Error(result.message || "Failed to change password");
-         }
-
-         // Optional: Show toast message
-         console.log("Password updated successfully");
+         console.log(res);
+         toast.success(res.message);
          reset();
       } catch (err: any) {
-         console.error("Error updating password:", err.message);
+         toast.error("Error updating password:", err.message);
       } finally {
          setIsSubmitting(false);
       }
    };
 
    return (
-      <div className="bg-white rounded-3xl shadow-xl p-12 border border-gray-200 w-full">
-         {/* Header */}
-         <div className="mb-10">
-            <div className="flex items-center text-gray-500 text-sm mb-4">
-               <svg
-                  className="w-4 h-4 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-               >
-                  <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
-               </svg>
-               My Account
-            </div>
-
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-               Change Password
-            </h1>
-            <p className="text-gray-500 mt-2 text-sm">
-               Update your password to keep your account secure.
-            </p>
+      <div className="min-h-screen w-full p-8">
+         <div className="mb-6 flex items-center gap-2 text-sm text-gray-500">
+            <svg
+               className="w-4 h-4 mr-2"
+               fill="currentColor"
+               viewBox="0 0 20 20"
+            >
+               <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+            </svg>
+            <span>Proposals</span>
+            <span className="text-gray-300">/</span>
+            <span className="text-gray-900 font-medium">List</span>
          </div>
 
-         {/* Form */}
-         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Current Password */}
-            <div>
+         <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="bg-white rounded-[20px] p-6 shadow-xl shadow-gray-100 border border-gray-100"
+         >
+            <div className="mb-10">
+               <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+                  Change Password
+               </h1>
+               <p className="text-gray-500 mt-2 text-sm">
+                  Update your password to keep your account secure.
+               </p>
+            </div>
+            <div className="mb-7">
                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Current Password
                </label>
@@ -103,9 +99,7 @@ export default function ChangePasswordForm() {
                )}
             </div>
 
-            {/* NEW + CONFIRM */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-               {/* New Password */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-7">
                <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                      New Password

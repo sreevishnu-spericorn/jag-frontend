@@ -9,6 +9,7 @@ import { forgotPassword } from "@/lib/api/auth";
 import EmailSuccessMessage from "./EmailSuccessMessage";
 
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 type FormValues = {
    email: string;
@@ -37,6 +38,7 @@ export const EmailVerifyForm = () => {
          setServerError(
             err.message || "Failed to send reset link. Please try again."
          );
+         toast.error(err.message || "Failed to send reset link. Please try again.")
       }
    };
 

@@ -14,6 +14,7 @@ import useSWR from "swr";
 import { useAuth } from "@/contexts/AuthContext";
 import Pagination from "../common/Pagination";
 import { PaginatedPublishers } from "@/types/publishers";
+import { toast } from "react-toastify";
 
 interface ProductsCOntainerProps {
    initialData: PaginatedProducts;
@@ -124,7 +125,9 @@ export default function ProductsContainer({
          mutate();
          setIsConfirmOpen(false);
          setDeleteId(null);
+         toast.success("Product deleted successfully");
       } catch (err) {
+         toast.error("Product deletion failed");
          console.error(err);
       } finally {
          setLoading(false);

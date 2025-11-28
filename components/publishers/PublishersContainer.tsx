@@ -19,6 +19,7 @@ import { PaginatedProducts } from "@/types/products";
 import useSWR from "swr";
 import { useAuth } from "@/contexts/AuthContext";
 import Pagination from "../common/Pagination";
+import { toast } from "react-toastify";
 
 export interface PublishersContainerProps {
    initialData: PaginatedPublishers;
@@ -117,12 +118,14 @@ export default function PublishersContainer({
       if (!deleteId) return;
       try {
          setLoading(true);
-         await deletePublisher(deleteId,accessToken);
+         await deletePublisher(deleteId, accessToken);
          mutate();
          setIsConfirmOpen(false);
          setDeleteId(null);
+         toast.info("Publisher deleted successfully");
       } catch (error) {
          console.error("Delete failed", error);
+         toast.error("Delete failed")
       } finally {
          setLoading(false);
       }
@@ -130,7 +133,7 @@ export default function PublishersContainer({
 
    const handlePreview = async (id: string) => {
       try {
-         const publisher = await getPublisherById(id,accessToken);
+         const publisher = await getPublisherById(id, accessToken);
          setPreviewPublisher(publisher);
          setIsPreviewOpen(true);
       } catch (err) {

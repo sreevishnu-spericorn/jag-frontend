@@ -10,13 +10,8 @@ import {
    deleteProposal,
    fetchProposals,
 } from "@/lib/api/proposals";
-import {
-   ProposalListItemDTO,
-   PaginatedProposals,
-   ProposalDetailDTO,
-} from "@/types/proposals";
+import { PaginatedProposals, ProposalDetailDTO } from "@/types/proposals";
 import debounce from "lodash.debounce";
-// import PreviewProposal from "./PreviewProposal";
 import DeleteConfirmModal from "../common/DeleteConfirmModal";
 import useSWR from "swr";
 import { useAuth } from "@/contexts/AuthContext";
@@ -34,33 +29,40 @@ export default function ProposalsContainer({
    const router = useRouter();
 
    const { accessToken } = useAuth();
-   const [isModalOpen, setIsModalOpen] = useState(false);
    const [loading, setLoading] = useState(false);
    const [page, setPage] = useState(1);
-   const [selectedProposal, setSelectedProposal] =
-      useState<ProposalDetailDTO | null>(null);
-   const [mode, setMode] = useState<"add" | "edit">("add");
    const [deleteId, setDeleteId] = useState<string | null>(null);
    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
    const [previewProposal, setPreviewProposal] =
       useState<ProposalDetailDTO | null>(null);
    const [search, setSearch] = useState("");
+   const [filterDates, setFilterDates] = useState<{
+      fromDate: Date | null;
+      toDate: Date | null;
+   }>({
+      fromDate: null,
+      toDate: null,
+   });
 
    const { data, error, isLoading, mutate } = useSWR(
-      accessToken ? ["proposals", page, search] : null,
-      () => fetchProposals(accessToken!, page, 10, search),
+      accessToken
+         ? ["proposals", page, search, filterDates.fromDate, filterDates.toDate]
+         : null,
+      () =>
+         fetchProposals(
+            accessToken!,
+            page,
+            10,
+            search,
+            filterDates.fromDate,
+            filterDates.toDate
+         ),
       { revalidateOnFocus: false, fallbackData: initialData }
    );
 
    const proposals = data?.proposals || [];
    const totalPages = data?.pagination.pages || 1;
-
-   const closeModal = () => {
-      setIsModalOpen(false);
-      setSelectedProposal(null);
-      setMode("add");
-   };
 
    const debouncedSearch = useCallback(
       debounce((value: string) => {
@@ -76,6 +78,11 @@ export default function ProposalsContainer({
 
    const handleEdit = (id: string) => {
       router.push(`/proposals/addProposal?editId=${id}`);
+   };
+
+   const handleFilter = (fromDate: Date | null, toDate: Date | null) => {
+      setFilterDates({ fromDate, toDate });
+      setPage(1);
    };
 
    const handleDeleteClick = (id: string) => {
@@ -121,9 +128,8 @@ export default function ProposalsContainer({
 
          <div className="bg-white rounded-[20px] p-6 shadow-xl shadow-gray-100 border border-gray-100">
             <ProposalsHeader
-               setIsModalOpen={setIsModalOpen}
                onSearch={handleSearchChange}
-               // Removed onFilter
+               onFilter={handleFilter}
             />
 
             <ProposalsTable
@@ -142,19 +148,6 @@ export default function ProposalsContainer({
                setPage(p);
             }}
          />
-
-         <Modal isOpen={isModalOpen} onClose={closeModal} size="lg">
-            {/* Placeholder for Add/Edit Form */}
-            {/* <AddProposalForm
-               mode={mode}
-               proposal={selectedProposal}
-               onClose={closeModal}
-               onProposalCreated={mutate}
-               accessToken={accessToken}
-            /> */}
-            <div>Hello</div>
-         </Modal>
-
          <Modal
             isOpen={isConfirmOpen}
             onClose={() => setIsConfirmOpen(false)}

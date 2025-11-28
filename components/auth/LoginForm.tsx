@@ -8,6 +8,7 @@ import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Input } from "../common/Input";
 import { Button } from "../common/Button";
 import { loginWithOtp } from "@/lib/api/auth";
+import { toast } from "react-toastify";
 
 type LoginFormValues = {
    email: string;
@@ -34,15 +35,14 @@ export const LoginForm = () => {
          const res = await loginWithOtp(data);
          const tempToken = res?.tempToken;
 
-         console.log(res);
-
          if (tempToken) {
-            console.log("NAVIGATING...");
+            toast.info("OTP verification required");
             localStorage.setItem("tempToken", tempToken);
             router.push("/verify-otp");
          }
       } catch (err: any) {
          setServerError(err.message || "Login failed");
+         toast.error(err.message || "Login failed");
       }
    };
 
@@ -122,7 +122,6 @@ export const LoginForm = () => {
                })}
                error={errors.password?.message}
                labelClassName="text-white text-[17px]"
-
             />
             <Button
                type="button"

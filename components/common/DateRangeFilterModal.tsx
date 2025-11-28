@@ -55,6 +55,7 @@ export function DateRangeFilterModal({
          <div className="mt-4 flex gap-2 justify-end">
             <Button
                onClick={() => {
+                  console.log(fromDate, toDate);
                   onApply(fromDate, toDate);
                   onClose();
                }}

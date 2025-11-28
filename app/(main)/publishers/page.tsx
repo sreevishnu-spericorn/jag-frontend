@@ -12,9 +12,11 @@ export default async function Page() {
          </p>
       );
    }
-
-   const initialData = await fetchPublishers(1, 10, "", accessToken);
-   const productsData = await fetchProducts(1, 10, "", null, null, accessToken);
+   
+   const [initialData, productsData] = await Promise.all([
+      fetchPublishers(1, 10, "", accessToken),
+      fetchProducts(1, 10, "", null, null, accessToken),
+   ]);
 
    return (
       <div className="w-full h-full px-10 py-3">

@@ -1,21 +1,19 @@
 // components/proposals/ProposalsHeader.tsx
 
-import { FiSearch, FiPlus } from "react-icons/fi";
+import { FiSearch, FiPlus, FiFilter } from "react-icons/fi";
 import { Input } from "../common/Input";
 import { Button } from "../common/Button";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { DateRangeFilterModal } from "../common/DateRangeFilterModal";
 
 interface ProposalsHeaderProps {
-   setIsModalOpen: (value: boolean) => void;
    onSearch: (value: string) => void;
-   // onFilter removed
+   onFilter: (fromDate: Date | null, toDate: Date | null) => void;
 }
 
-export function ProposalsHeader({
-   setIsModalOpen,
-   onSearch,
-}: ProposalsHeaderProps) {
-   // Removed isFilterOpen state and DateRangeFilterModal
+export function ProposalsHeader({ onSearch, onFilter }: ProposalsHeaderProps) {
+   const [isFilterOpen, setIsFilterOpen] = useState(false);
    const router = useRouter();
 
    return (
@@ -39,6 +37,12 @@ export function ProposalsHeader({
 
             <div className="flex items-center gap-3">
                <Button
+                  onClick={() => setIsFilterOpen(true)}
+                  className="flex items-center gap-1.5 px-4 py-3 border border-gray-200 rounded-full"
+               >
+                  <FiFilter className="h-4 w-4" /> Filter
+               </Button>
+               <Button
                   onClick={() => router.push("/proposals/addProposal")}
                   className="flex items-center gap-1.5 px-4 py-3 rounded-full text-white text-sm font-medium hover:bg-[#0E6E70] transition cursor-pointer"
                   style={{ backgroundColor: "#11979C" }}
@@ -48,6 +52,11 @@ export function ProposalsHeader({
                </Button>
             </div>
          </div>
+         <DateRangeFilterModal
+            isOpen={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            onApply={(from, to) => onFilter(from, to)}
+         />
       </div>
    );
 }

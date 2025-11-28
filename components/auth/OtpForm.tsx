@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "../common/Button"; // your existing button
 import { verifyOtp } from "@/lib/api/auth";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "react-toastify";
 
 type OtpFormValues = {
    otp: string;
@@ -87,12 +88,14 @@ const OtpForm = () => {
          console.log(res);
 
          if (res?.authToken) {
-            localStorage.removeItem("tempToken"); 
-            setAccessToken(res.authToken);       
+            localStorage.removeItem("tempToken");
+            setAccessToken(res.authToken);
             router.push("/dashboard");
+            toast.success("Login Successful");
          }
       } catch (err: any) {
          setServerError(err.response?.data?.message || "Invalid OTP");
+         toast.error(err.response?.data?.message || "Invalid OTP");
       }
    };
 

@@ -14,6 +14,7 @@ import {
    UpdatePublisherDTO,
 } from "@/lib/api/publishers";
 import { PublisherDTO } from "@/types/publishers";
+import { toast } from "react-toastify";
 
 const PHONE_REGEX = /^\+?(\d[\s-]?){8,}\d$/;
 
@@ -166,7 +167,8 @@ export default function AddPublisherForm({
       console.log("Submitting Data:", data);
       if (!data.dynamicProducts || data.dynamicProducts.length === 0) {
          setLoading(false);
-         return alert("Please add at least one product.");
+         toast.info("Please add at least one product.");
+         return;
       }
       try {
          setLoading(true);
@@ -193,6 +195,7 @@ export default function AddPublisherForm({
 
             const result = await createPublisher(payload, accessToken);
             console.log("Publisher created:", result);
+            toast.success("Publisher created successfully");
          }
 
          if (mode === "edit" && publisher) {
@@ -216,13 +219,14 @@ export default function AddPublisherForm({
                accessToken
             );
             console.log("Publisher updated:", result);
+            toast.success("Publisher updated successfully")
          }
 
          await onPublisherCreated();
          onClose();
       } catch (err: any) {
          console.error("Submission error:", err);
-         alert(err.message || "Failed to save publisher.");
+         toast.error(err.message || "Failed to save publisher.")
       } finally {
          setLoading(false);
       }

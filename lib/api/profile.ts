@@ -25,6 +25,7 @@ export async function updateProfile(
    data: UpdateProfileDTO,
    accessToken: string | null
 ): Promise<AdminProfileDTO> {
+   console.log(data);
    try {
       const res = await fetch(`${API_URL}/admin/profileManagement/update`, {
          method: "PUT",

@@ -5,7 +5,6 @@ export default function ForgotPasswordPage() {
    return (
       <div className="flex justify-center items-center min-h-screen w-full px-4">
          <div className="bg-white rounded-[40px] shadow-2xl w-[690px] h-[742px] overflow-hidden relative">
-            {/* Top Gradient Section (same height as verify email) */}
             <div className="bg-linear-to-br from-teal-400 to-teal-600 h-40 relative">
                {/* Floating Key Icon */}
                <div

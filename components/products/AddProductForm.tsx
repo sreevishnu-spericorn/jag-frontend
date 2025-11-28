@@ -6,6 +6,7 @@ import { Input } from "../common/Input";
 import { createProduct, updateProduct } from "@/lib/api/products";
 import { ProductDTO } from "@/types/products";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 interface FormValues {
    productName: string;
@@ -47,10 +48,11 @@ export default function AddProductForm({
       try {
          if (mode === "edit" && product?.id) {
             await updateProduct(product.id, data, accessToken);
+            toast.info("Product updated");
          } else {
             await createProduct(data, accessToken);
+            toast.success("Product created successfully");
          }
-
          onProductCreated();
          reset();
          onClose();

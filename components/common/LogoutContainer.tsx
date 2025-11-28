@@ -6,6 +6,7 @@ import { Button } from "../common/Button";
 import { FiLogOut } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "react-toastify";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -25,16 +26,17 @@ export default function LogoutContainer() {
             credentials: "include",
          });
 
-         router.push("/login");
+         router.push("/");
 
          if (res.ok) {
-            // Later we add redirect to login
             console.log("Logged out");
          }
       } catch (error) {
          console.error("Logout failed", error);
+         toast.error("Logout Error");
       } finally {
          setLoading(false);
+         toast.info("Logged Out");
       }
    };
 
@@ -63,7 +65,7 @@ export default function LogoutContainer() {
                <button
                   onClick={() => {
                      setIsOpen(false);
-                     router.push("/");
+                     router.push("/dashboard");
                   }}
                   className="px-5 py-2 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-100 transition"
                >

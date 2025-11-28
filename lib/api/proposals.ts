@@ -8,16 +8,21 @@ import {
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function fetchProposals(
-   accessToken: string,
+   accessToken: string | null,
    page = 1,
    limit = 10,
-   search = ""
+   search = "",
+   fromDate: Date | null = null,
+   toDate: Date | null = null
 ): Promise<PaginatedProposals> {
    const query = new URLSearchParams({
       page: String(page),
       limit: String(limit),
       search,
+      fromDate: fromDate ? fromDate.toISOString() : "",
+      toDate: toDate ? toDate.toISOString() : "",
    });
+   console.log(query);
 
    const res = await fetch(
       `${API_URL}/admin/proposalManagement/list?${query.toString()}`,
