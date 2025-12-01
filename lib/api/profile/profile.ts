@@ -1,18 +1,23 @@
 import { AdminProfileDTO, UpdateProfileDTO } from "@/types/profile";
+import { getProfileBasePath } from "@/utils/basePath";
+import { decodeAccessToken } from "@/utils/decodeToken";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function fetchProfile(
    accessToken: string | null
 ): Promise<AdminProfileDTO> {
-   const res = await fetch(`${API_URL}/admin/profileManagement/me`, {
+   const decoded = decodeAccessToken(accessToken);
+   const role = decoded?.roleId;
+
+   const basePath = getProfileBasePath(role);
+
+   const res = await fetch(`${API_URL}${basePath}/me`, {
       headers: { Authorization: `Bearer ${accessToken}` || "" },
       credentials: "include",
    });
 
    const result = await res.json();
-
-   console.log(result);
 
    if (!res.ok) {
       throw new Error(result?.message || "Failed to fetch profile");
@@ -26,8 +31,13 @@ export async function updateProfile(
    accessToken: string | null
 ): Promise<AdminProfileDTO> {
    console.log(data);
+
+   const decoded = decodeAccessToken(accessToken);
+   const role = decoded?.roleId;
+
+   const basePath = getProfileBasePath(role);
    try {
-      const res = await fetch(`${API_URL}/admin/profileManagement/update`, {
+      const res = await fetch(`${API_URL}${basePath}/update`, {
          method: "PUT",
          headers: {
             "Content-Type": "application/json",
@@ -54,8 +64,13 @@ export async function changePassword(
    data: { currentPassword: string; newPassword: string },
    accessToken: string | null
 ) {
+   const decoded = decodeAccessToken(accessToken);
+   const role = decoded?.roleId;
+
+   const basePath = getProfileBasePath(role);
+
    const res = await fetch(
-      `${API_URL}/admin/profileManagement/change-password`,
+      `${API_URL}${basePath}/change-password`,
       {
          method: "PUT",
          headers: {

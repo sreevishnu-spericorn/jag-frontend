@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { FiHome, FiEdit3, FiCheck, FiX } from "react-icons/fi";
 import { AdminProfileDTO, UpdateProfileDTO } from "@/types/profile";
-import { updateProfile } from "@/lib/api/profile";
+import { updateProfile } from "@/lib/api/profile/profile";
 import { Button } from "../common/Button";
 import { Input } from "../common/Input";
 import { Controller, useForm } from "react-hook-form";

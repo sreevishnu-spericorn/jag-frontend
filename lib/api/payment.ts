@@ -31,7 +31,7 @@ export async function createPaymentIntent(
 }
 
 export async function fetchPayments(
-   accessToken: string,
+   accessToken: string | null,
    page = 1,
    limit = 10,
    proposalId: string | null = null,

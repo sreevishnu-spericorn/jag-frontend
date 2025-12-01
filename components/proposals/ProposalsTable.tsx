@@ -8,6 +8,7 @@ import Image from "next/image";
 type ProposalTableProps = {
    proposals: ProposalListItemDTO[];
    loading: boolean;
+   role: String | undefined;
    onEdit: (id: string) => void;
    onDelete: (id: string) => void;
    onPreview: (id: string) => void;
@@ -54,8 +55,8 @@ const formatDate = (dateString: string) => {
 
 export default function ProposalsTable({
    proposals,
-   loading,
    onEdit,
+   role,
    onDelete,
    onPreview,
 }: ProposalTableProps) {
@@ -91,7 +92,7 @@ export default function ProposalsTable({
                            <div className="flex items-center gap-3">
                               {/* Correct Logo size to 40x40px */}
                               <div className="w-10 h-10 rounded-[15px] overflow-hidden flex items-center justify-center border border-gray-100 bg-white shrink-0">
-                                 {row.client.logo ? (
+                                 {row.client?.logo ? (
                                     <div className="w-full h-full flex items-center justify-center">
                                        <img
                                           src={`http://localhost:3457/${row.client.logo}`}
@@ -162,51 +163,62 @@ export default function ProposalsTable({
 
                         {/* Actions */}
                         <td className="p-4 flex items-center gap-2 rounded-r-xl border-r border-y border-gray-200 min-w-[120px]">
-                           <Button
-                              className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-[#12ABAA] hover:bg-[#12ABAA]/10 transition cursor-pointer"
-                              onClick={() => onPreview(row.id)}
-                           >
-                              <FiEye
-                                 className="text-gray-600 hover:text-[#12ABAA]"
-                                 size={16}
-                              />
-                           </Button>
+                           {role === "Client" ? (
+                              <Button
+                                 className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-[#12ABAA] hover:bg-[#12ABAA]/10 transition cursor-pointer"
+                                 onClick={() => onPreview(row.id)}
+                              >
+                                 View
+                              </Button>
+                           ) : (
+                              <>
+                                 <Button
+                                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-[#12ABAA] hover:bg-[#12ABAA]/10 transition cursor-pointer"
+                                    onClick={() => onPreview(row.id)}
+                                 >
+                                    <FiEye
+                                       className="text-gray-600 hover:text-[#12ABAA]"
+                                       size={16}
+                                    />
+                                 </Button>
 
-                           <Button
-                              onClick={() => onEdit(row.id)}
-                              disabled={row.proposalStatus === "Paid"} // ❌ Disable if Paid
-                              className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer ${
-                                 row.proposalStatus === "Paid"
-                                    ? "opacity-50 cursor-not-allowed hover:border-gray-300 hover:bg-white"
-                                    : ""
-                              }`}
-                           >
-                              <FiEdit3
-                                 className="text-gray-600 hover:text-blue-600"
-                                 size={16}
-                              />
-                           </Button>
+                                 <Button
+                                    onClick={() => onEdit(row.id)}
+                                    disabled={row.proposalStatus === "Paid"} // ❌ Disable if Paid
+                                    className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer ${
+                                       row.proposalStatus === "Paid"
+                                          ? "opacity-50 cursor-not-allowed hover:border-gray-300 hover:bg-white"
+                                          : ""
+                                    }`}
+                                 >
+                                    <FiEdit3
+                                       className="text-gray-600 hover:text-blue-600"
+                                       size={16}
+                                    />
+                                 </Button>
 
-                           <Button
-                              onClick={() => onDelete(row.id)}
-                              className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-red-500 hover:bg-red-50 transition cursor-pointer"
-                           >
-                              <FiTrash2
-                                 className="text-red-500 hover:text-red-600"
-                                 size={16}
-                              />
-                           </Button>
+                                 <Button
+                                    onClick={() => onDelete(row.id)}
+                                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-red-500 hover:bg-red-50 transition cursor-pointer"
+                                 >
+                                    <FiTrash2
+                                       className="text-red-500 hover:text-red-600"
+                                       size={16}
+                                    />
+                                 </Button>
 
-                           <Button
-                              className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer ${
-                                 row.proposalStatus === "Paid"
-                                    ? "opacity-50 cursor-not-allowed hover:border-gray-300 hover:bg-white"
-                                    : ""
-                              }`}
-                              onClick={() => onPreview(row.id)}
-                           >
-                              Pay
-                           </Button>
+                                 <Button
+                                    className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition cursor-pointer ${
+                                       row.proposalStatus === "Paid"
+                                          ? "opacity-50 cursor-not-allowed hover:border-gray-300 hover:bg-white"
+                                          : ""
+                                    }`}
+                                    onClick={() => onPreview(row.id)}
+                                 >
+                                    Pay
+                                 </Button>
+                              </>
+                           )}
                         </td>
                      </tr>
                   ))}

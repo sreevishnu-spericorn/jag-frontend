@@ -22,7 +22,6 @@ export async function fetchProducts(
       fromDate: fromDate ? fromDate.toISOString() : "",
       toDate: toDate ? toDate.toISOString() : "",
    });
-   // console.log("Request Query:", query.toString());
 
    const res = await fetch(
       `${API_URL}/admin/productManagement/list/?${query.toString()}`,

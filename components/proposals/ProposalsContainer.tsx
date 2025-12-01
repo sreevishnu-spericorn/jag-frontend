@@ -9,7 +9,7 @@ import {
    getProposalById,
    deleteProposal,
    fetchProposals,
-} from "@/lib/api/proposals";
+} from "@/lib/api/proposals/proposals";
 import { PaginatedProposals, ProposalDetailDTO } from "@/types/proposals";
 import debounce from "lodash.debounce";
 import DeleteConfirmModal from "../common/DeleteConfirmModal";
@@ -28,7 +28,7 @@ export default function ProposalsContainer({
 }: ProposalsContainerProps) {
    const router = useRouter();
 
-   const { accessToken } = useAuth();
+   const { accessToken, user } = useAuth();
    const [loading, setLoading] = useState(false);
    const [page, setPage] = useState(1);
    const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -62,7 +62,7 @@ export default function ProposalsContainer({
    );
 
    const proposals = data?.proposals || [];
-   const totalPages = data?.pagination.pages || 1;
+   const totalPages = data?.pagination?.pages || 1;
 
    const debouncedSearch = useCallback(
       debounce((value: string) => {
@@ -129,12 +129,14 @@ export default function ProposalsContainer({
          <div className="bg-white rounded-[20px] p-6 shadow-xl shadow-gray-100 border border-gray-100">
             <ProposalsHeader
                onSearch={handleSearchChange}
+               role={user?.roleId}
                onFilter={handleFilter}
             />
 
             <ProposalsTable
                proposals={proposals}
                loading={isLoading}
+               role={user?.roleId}
                onEdit={handleEdit}
                onDelete={handleDeleteClick}
                onPreview={handlePreview}
@@ -170,6 +172,7 @@ export default function ProposalsContainer({
             {previewProposal && (
                <PreviewProposal
                   proposal={previewProposal}
+                  role={user?.roleId}
                   onClose={() => setIsPreviewOpen(false)}
                />
             )}

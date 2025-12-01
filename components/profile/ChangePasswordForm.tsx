@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { changePassword } from "@/lib/api/profile";
+import { changePassword } from "@/lib/api/profile/profile";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../common/Input";

@@ -4,6 +4,7 @@ import {
    CreateProposalDTO,
    UpdateProposalDTO,
 } from "@/types/proposals";
+import { decodeAccessToken } from "@/utils/decodeToken";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -15,6 +16,11 @@ export async function fetchProposals(
    fromDate: Date | null = null,
    toDate: Date | null = null
 ): Promise<PaginatedProposals> {
+   const decoded = decodeAccessToken(accessToken);
+   const role = decoded?.roleId;
+
+   const basePath = role === "Client" ? "/client/proposalManagement" : "/admin/proposalManagement";
+
    const query = new URLSearchParams({
       page: String(page),
       limit: String(limit),
@@ -24,13 +30,10 @@ export async function fetchProposals(
    });
    console.log(query);
 
-   const res = await fetch(
-      `${API_URL}/admin/proposalManagement/list?${query.toString()}`,
-      {
-         headers: { Authorization: `Bearer ${accessToken}` },
-         credentials: "include",
-      }
-   );
+   const res = await fetch(`${API_URL}${basePath}/list?${query.toString()}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      credentials: "include",
+   });
 
    if (!res.ok) {
       const error = await res.json();
@@ -44,7 +47,12 @@ export async function getProposalById(
    id: string,
    accessToken: string
 ): Promise<ProposalDetailDTO> {
-   const res = await fetch(`${API_URL}/admin/proposalManagement/${id}`, {
+   const decoded = decodeAccessToken(accessToken);
+   const role = decoded?.roleId;
+
+   const basePath = role === "Client" ? "/client/proposalManagement" : "/admin/proposalManagement";
+
+   const res = await fetch(`${API_URL}${basePath}/${id}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
       credentials: "include",
    });

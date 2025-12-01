@@ -7,6 +7,17 @@ export interface ProductDTO {
    updatedAt: string;
    approved?: boolean;
    isDeleted?: boolean;
+   customFields: CustomField[];
+}
+
+interface CustomField {
+   fieldType: string;
+   fieldLabel: string;
+   characterLimit?: number;
+   allowedFormats?: string[];
+   maxFileSizeMB?: number;
+   widthPx?: number;
+   heightPx?: number;
 }
 
 export interface PaginatedProducts {

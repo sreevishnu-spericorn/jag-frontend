@@ -139,7 +139,6 @@ export default function Loading() {
 
                            {/* Buttons */}
                            <div className="flex space-x-3">
-                              <div className="h-10 w-20 bg-teal-200 border-2 border-teal-500 rounded-lg"></div>
                               <div className="h-10 w-20 bg-teal-500 rounded-lg"></div>
                            </div>
                         </div>

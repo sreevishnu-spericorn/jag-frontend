@@ -2,6 +2,8 @@ import { Pagination } from "./clients"; // Assuming Pagination is in types/clien
 
 export interface ProposalProductDTO {
    publisherId: string;
+   product?: { productName: String };
+   publisher?: { publisherName: String };
    productId: string;
    quantity: number;
    price: number;

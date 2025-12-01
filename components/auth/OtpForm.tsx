@@ -14,7 +14,7 @@ type OtpFormValues = {
 
 const OtpForm = () => {
    const router = useRouter();
-   const { setAccessToken } = useAuth();
+   const { setAccessToken, user } = useAuth();
 
    const [serverError, setServerError] = useState("");
    const [tempToken, setTempToken] = useState("");
@@ -90,6 +90,15 @@ const OtpForm = () => {
          if (res?.authToken) {
             localStorage.removeItem("tempToken");
             setAccessToken(res.authToken);
+         }
+
+         console.log("User isssss", user);
+
+         if (user?.roleId === "Client") {
+            console.log("Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+            router.push("/profile");
+            toast.success("Login Successful");
+         } else if (user?.roleId === "UserAdmin") {
             router.push("/dashboard");
             toast.success("Login Successful");
          }

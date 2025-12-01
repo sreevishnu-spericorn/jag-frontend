@@ -11,7 +11,7 @@ import { PaginatedPublishers } from "@/types/publishers";
 import { Input } from "../common/Input";
 import { Button } from "../common/Button";
 import { useRouter } from "next/navigation";
-import { createProposal, updateProposal } from "@/lib/api/proposals";
+import { createProposal, updateProposal } from "@/lib/api/proposals/proposals";
 import { CreateProposalDTO } from "@/types/proposals";
 import { toast } from "react-toastify";
 
@@ -334,10 +334,6 @@ export default function AddProposalContainer({
                         </div>
 
                         <div className="flex space-x-3">
-                           <Button className="bg-white border-2 border-teal-500 text-teal-500 font-semibold py-2 px-5 rounded-lg hover:bg-teal-50 transition duration-150">
-                              Send
-                           </Button>
-
                            <Button
                               onClick={handleSave}
                               className="bg-teal-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-teal-600 transition duration-150"

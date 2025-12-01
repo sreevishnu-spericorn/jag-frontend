@@ -1,6 +1,6 @@
 import AddProposalContainer from "@/components/proposals/AddProposalContainer";
 import { fetchClients } from "@/lib/api/clients";
-import { getProposalById } from "@/lib/api/proposals";
+import { getProposalById } from "@/lib/api/proposals/proposals";
 import { fetchPublishers } from "@/lib/api/publishers";
 import { getServerAccessToken } from "@/lib/data/serverAuth";
 
@@ -25,8 +25,6 @@ export default async function Page({
          fetchPublishers(1, 10, "", accessToken),
          editId ? getProposalById(editId, accessToken) : null,
       ]);
-
-
 
    return (
       <div className="w-full h-full px-10 py-3">

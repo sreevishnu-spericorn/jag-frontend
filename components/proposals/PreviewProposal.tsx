@@ -6,10 +6,15 @@ import { ProposalPaymentFormWrapper } from "./ProposalPaymentForm";
 
 interface Props {
    proposal: ProposalDetailDTO;
+   role: String | undefined;
    onClose: () => void;
 }
 
-export default function PreviewProposal({ proposal, onClose }: Props) {
+{
+   /* PRODUCTS TABLE */
+}
+export default function PreviewProposal({ proposal, role, onClose }: Props) {
+   console.log(proposal);
    const totalAmount = proposal.products.reduce((acc, p) => acc + p.total, 0);
    const [showPayment, setShowPayment] = useState(false);
 
@@ -25,7 +30,6 @@ export default function PreviewProposal({ proposal, onClose }: Props) {
 
    return (
       <div className="w-full mx-auto p-10 bg-white rounded-3xl">
-         {/* HEADER */}
          <div className="flex justify-between mb-8">
             <h2 className="text-2xl font-bold text-gray-800 tracking-tight">
                Pay Now
@@ -57,7 +61,6 @@ export default function PreviewProposal({ proposal, onClose }: Props) {
             </div>
          </div>
 
-         {/* PRODUCTS TABLE */}
          <div className="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
             <table className="w-full text-sm">
                <thead className="bg-gray-50 text-gray-700 border-b">
@@ -65,7 +68,7 @@ export default function PreviewProposal({ proposal, onClose }: Props) {
                      <Th>#</Th>
                      <Th>Product Name</Th>
                      <Th>Publisher</Th>
-                     <Th>Budget</Th>
+                     <Th>Price</Th>
                      <Th>Quantity</Th>
                      <Th>Total Amount</Th>
                   </tr>
@@ -78,8 +81,8 @@ export default function PreviewProposal({ proposal, onClose }: Props) {
                         className="border-b last:border-none hover:bg-gray-50 transition"
                      >
                         <Td>{index + 1}</Td>
-                        <Td>{prod.productId}</Td>
-                        <Td>{prod.publisherId}</Td>
+                        <Td>{prod?.product?.productName}</Td>
+                        <Td>{prod?.publisher?.publisherName}</Td>
                         <Td>${prod.price.toLocaleString()}</Td>
                         <Td>{prod.quantity}</Td>
                         <Td className="font-semibold">
@@ -131,7 +134,6 @@ export default function PreviewProposal({ proposal, onClose }: Props) {
             </label>
          </div>
 
-         {/* FOOTER BUTTONS */}
          <div className="mt-12 flex justify-end gap-4">
             <button
                onClick={onClose}
@@ -143,10 +145,11 @@ export default function PreviewProposal({ proposal, onClose }: Props) {
             >
                Cancel
             </button>
-            <button
-               onClick={() => setShowPayment(true)}
-               disabled={proposal.paymentStatus !== "Unpaid"}
-               className={`
+            {role === "UserAdmin" ? (
+               <button
+                  onClick={() => setShowPayment(true)}
+                  disabled={proposal.paymentStatus !== "Unpaid"}
+                  className={`
     px-12 py-2 rounded-full font-semibold transition shadow-md
     ${
        proposal.paymentStatus === "Unpaid"
@@ -154,9 +157,10 @@ export default function PreviewProposal({ proposal, onClose }: Props) {
           : "bg-gray-300 text-gray-500 cursor-not-allowed"
     }
   `}
-            >
-               Next
-            </button>
+               >
+                  Next
+               </button>
+            ) : null}
          </div>
       </div>
    );

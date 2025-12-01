@@ -9,10 +9,15 @@ import { DateRangeFilterModal } from "../common/DateRangeFilterModal";
 
 interface ProposalsHeaderProps {
    onSearch: (value: string) => void;
+   role: String | undefined;
    onFilter: (fromDate: Date | null, toDate: Date | null) => void;
 }
 
-export function ProposalsHeader({ onSearch, onFilter }: ProposalsHeaderProps) {
+export function ProposalsHeader({
+   onSearch,
+   role,
+   onFilter,
+}: ProposalsHeaderProps) {
    const [isFilterOpen, setIsFilterOpen] = useState(false);
    const router = useRouter();
 
@@ -42,14 +47,16 @@ export function ProposalsHeader({ onSearch, onFilter }: ProposalsHeaderProps) {
                >
                   <FiFilter className="h-4 w-4" /> Filter
                </Button>
-               <Button
-                  onClick={() => router.push("/proposals/addProposal")}
-                  className="flex items-center gap-1.5 px-4 py-3 rounded-full text-white text-sm font-medium hover:bg-[#0E6E70] transition cursor-pointer"
-                  style={{ backgroundColor: "#11979C" }}
-               >
-                  <FiPlus className="h-5 w-5" />
-                  Create Proposal
-               </Button>
+               {role === "UserAdmin" ? (
+                  <Button
+                     onClick={() => router.push("/proposals/addProposal")}
+                     className="flex items-center gap-1.5 px-4 py-3 rounded-full text-white text-sm font-medium hover:bg-[#0E6E70] transition cursor-pointer"
+                     style={{ backgroundColor: "#11979C" }}
+                  >
+                     <FiPlus className="h-5 w-5" />
+                     Create Proposal
+                  </Button>
+               ) : null}
             </div>
          </div>
          <DateRangeFilterModal

@@ -1,5 +1,5 @@
 import { getServerAccessToken } from "@/lib/data/serverAuth";
-import { fetchProfile } from "@/lib/api/profile";
+import { fetchProfile } from "@/lib/api/profile/profile";
 import ProfileContainer from "@/components/profile/ProfileContainer";
 
 export default async function Page() {

@@ -10,18 +10,15 @@ import { getServerAccessToken } from "@/lib/data/serverAuth";
 import DashboardCharts from "@/components/dashboard/DashboardCharts";
 import RightPanelItem from "@/components/dashboard/RightPanelItem";
 import OrderItem from "@/components/dashboard/OrderItem";
-import AuthError from "@/components/auth/AuthError";
 
 const Dashboard = async () => {
    const accessToken = await getServerAccessToken();
-   if (!accessToken) return <AuthError />;
 
    const [clientData, paymentData] = await Promise.all([
       fetchClients(accessToken, 1, 10, "", null, null),
       fetchPayments(accessToken, 1, 12),
    ]);
 
-   // Prepare chart data
    const monthlySales = Array(12).fill(0);
    paymentData.payments.forEach((p: any) => {
       const monthIndex = new Date(p.createdAt).getMonth();

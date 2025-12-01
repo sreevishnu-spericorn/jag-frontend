@@ -6,19 +6,22 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
 import { Button } from "@/components/common/Button";
+import { getProfileBasePath } from "@/utils/basePath";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function LogoutContainer() {
    const [loading, setLoading] = useState(false);
-   const { accessToken } = useAuth();
+   const { accessToken, user } = useAuth();
    const router = useRouter();
+
+   const baseUrl = getProfileBasePath(user?.roleId);
 
    const handleLogout = async () => {
       setLoading(true);
 
       try {
-         const res = await fetch(`${API_URL}/admin/profileManagement/logout`, {
+         const res = await fetch(`${API_URL}${baseUrl}/logout`, {
             method: "POST",
             credentials: "include",
             headers: {

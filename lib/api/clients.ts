@@ -42,7 +42,7 @@ export async function deleteClient(id: string, accessToken: string) {
 }
 
 export async function fetchClients(
-   accessToken: string,
+   accessToken: string | null,
    page = 1,
    limit = 10,
    search = "",
