@@ -14,7 +14,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import Select from "react-select";
 import { Trash2 } from "lucide-react";
-import { STANDARD_FORMATS,customSelectStyles } from "./CustomData";
+import { STANDARD_FORMATS, customSelectStyles } from "./CustomData";
 
 interface CustomField {
    fieldType: string;
@@ -45,7 +45,6 @@ interface AddProductFormProps {
    onProductCreated: () => void;
    accessToken: string | null;
 }
-
 
 export default function AddProductForm({
    mode,
@@ -130,6 +129,10 @@ export default function AddProductForm({
             maxFileSizeMB: f.maxFileSizeMB || undefined,
             widthPx: f.widthPx || undefined,
             heightPx: f.heightPx || undefined,
+            maxUploadCount:
+               f.isMultipleUpload && f.maxUploadCount
+                  ? Number(f.maxUploadCount)
+                  : 1,
          })),
       };
 
@@ -147,8 +150,8 @@ export default function AddProductForm({
          onClose();
       } catch (err: any) {
          const message =
-            err?.response?.data?.message || 
-            err?.message || 
+            err?.response?.data?.message ||
+            err?.message ||
             "Something went wrong";
 
          toast.error(message);

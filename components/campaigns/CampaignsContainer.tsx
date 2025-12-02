@@ -1,41 +1,33 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import ProposalsTable from "./ProposalsTable";
-import { ProposalsHeader } from "./ProposalsHeader";
+import CampaignsTable from "./CampaignsTable";
+import { CampaignsHeader } from "./CampaignsHeader";
 import Modal from "../common/Modal";
 import { FiHome } from "react-icons/fi";
-import {
-   getProposalById,
-   deleteProposal,
-   fetchProposals,
-} from "@/lib/api/proposals/proposals";
-import { PaginatedProposals, ProposalDetailDTO } from "@/types/proposals";
+import { getCampaignById, fetchCampaigns } from "@/lib/api/campaigns/campaigns";
+import { CampaignListResponse, CampaignListItemDTO } from "@/types/campaigns";
 import debounce from "lodash.debounce";
-import DeleteConfirmModal from "../common/DeleteConfirmModal";
 import useSWR from "swr";
 import { useAuth } from "@/contexts/AuthContext";
 import Pagination from "../common/Pagination";
 import { useRouter } from "next/navigation";
-import PreviewProposal from "./PreviewProposal";
+import PreviewCampaign from "./PreviewCampaign";
 
-export interface ProposalsContainerProps {
-   initialData: PaginatedProposals;
+export interface CampaignsContainerProps {
+   initialData: CampaignListResponse;
 }
 
-export default function ProposalsContainer({
+export default function CampaignsContainer({
    initialData,
-}: ProposalsContainerProps) {
+}: CampaignsContainerProps) {
    const router = useRouter();
 
    const { accessToken, user } = useAuth();
-   const [loading, setLoading] = useState(false);
    const [page, setPage] = useState(1);
-   const [deleteId, setDeleteId] = useState<string | null>(null);
-   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-   const [previewProposal, setPreviewProposal] =
-      useState<ProposalDetailDTO | null>(null);
+   const [previewCampaign, setPreviewCampaign] =
+      useState<CampaignListItemDTO | null>(null);
    const [search, setSearch] = useState("");
    const [filterDates, setFilterDates] = useState<{
       fromDate: Date | null;
@@ -45,12 +37,12 @@ export default function ProposalsContainer({
       toDate: null,
    });
 
-   const { data, error, isLoading, mutate } = useSWR(
+   const { data, isLoading } = useSWR(
       accessToken
-         ? ["proposals", page, search, filterDates.fromDate, filterDates.toDate]
+         ? ["campaigns", page, search, filterDates.fromDate, filterDates.toDate]
          : null,
       () =>
-         fetchProposals(
+         fetchCampaigns(
             accessToken!,
             page,
             10,
@@ -61,7 +53,7 @@ export default function ProposalsContainer({
       { revalidateOnFocus: false, fallbackData: initialData }
    );
 
-   const proposals = data?.proposals || [];
+   const campaigns = data?.campaigns || [];
    const totalPages = data?.pagination?.pages || 1;
 
    const debouncedSearch = useCallback(
@@ -71,13 +63,14 @@ export default function ProposalsContainer({
       }, 500),
       []
    );
-   
+
    const handleSearchChange = (value: string) => {
       debouncedSearch(value);
    };
 
    const handleEdit = (id: string) => {
-      router.push(`/proposals/addProposal?editId=${id}`);
+      console.log("Edit ID ", id);
+      router.push(`/campaign/editCampaign/${id}`);
    };
 
    const handleFilter = (fromDate: Date | null, toDate: Date | null) => {
@@ -85,32 +78,11 @@ export default function ProposalsContainer({
       setPage(1);
    };
 
-   const handleDeleteClick = (id: string) => {
-      setDeleteId(id);
-      setIsConfirmOpen(true);
-   };
-
-   const handleConfirmDelete = async () => {
-      if (!deleteId) return;
-      if (!accessToken) return;
-      try {
-         setLoading(true);
-         await deleteProposal(deleteId, accessToken);
-         mutate();
-         setIsConfirmOpen(false);
-         setDeleteId(null);
-      } catch (error) {
-         console.error("Delete failed", error);
-      } finally {
-         setLoading(false);
-      }
-   };
-
    const handlePreview = async (id: string) => {
       if (!accessToken) return;
       try {
-         const proposal = await getProposalById(id, accessToken);
-         setPreviewProposal(proposal);
+         const campaign = await getCampaignById(id, accessToken);
+         setPreviewCampaign(campaign);
          setIsPreviewOpen(true);
       } catch (err) {
          console.error("Preview load failed", err);
@@ -121,24 +93,23 @@ export default function ProposalsContainer({
       <div className="min-h-screen w-full p-8">
          <div className="mb-6 flex items-center gap-2 text-sm text-gray-500">
             <FiHome className="h-4 w-4 text-gray-400" />
-            <span>Proposals</span>
+            <span>Campaigns</span> {/* Changed breadcrumb */}
             <span className="text-gray-300">/</span>
             <span className="text-gray-900 font-medium">List</span>
          </div>
 
          <div className="bg-white rounded-[20px] p-6 shadow-xl shadow-gray-100 border border-gray-100">
-            <ProposalsHeader
+            <CampaignsHeader
                onSearch={handleSearchChange}
-               role={user?.roleId}
+               role={user?.roleId} // Role still needed for button logic
                onFilter={handleFilter}
             />
 
-            <ProposalsTable
-               proposals={proposals}
+            <CampaignsTable
+               campaigns={campaigns}
                loading={isLoading}
                role={user?.roleId}
                onEdit={handleEdit}
-               onDelete={handleDeleteClick}
                onPreview={handlePreview}
             />
          </div>
@@ -150,28 +121,15 @@ export default function ProposalsContainer({
                setPage(p);
             }}
          />
-         <Modal
-            isOpen={isConfirmOpen}
-            onClose={() => setIsConfirmOpen(false)}
-            size="sm"
-         >
-            <DeleteConfirmModal
-               isOpen={isConfirmOpen}
-               title="Delete Proposal"
-               description="Are you sure you want to delete this proposal?"
-               loading={loading}
-               onClose={() => setIsConfirmOpen(false)}
-               onConfirm={handleConfirmDelete}
-            />
-         </Modal>
+
          <Modal
             isOpen={isPreviewOpen}
             onClose={() => setIsPreviewOpen(false)}
             size="lg"
          >
-            {previewProposal && (
-               <PreviewProposal
-                  proposal={previewProposal}
+            {previewCampaign && (
+               <PreviewCampaign
+                  campaign={previewCampaign}
                   role={user?.roleId}
                   onClose={() => setIsPreviewOpen(false)}
                />

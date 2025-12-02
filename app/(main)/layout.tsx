@@ -29,8 +29,8 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                      h-full
                      w-full
                      bg-[#F1F5F9]
-                     rounded-tl-[69px]
-                     rounded-bl-[69px]
+                     rounded-tl-[50px]
+                     rounded-bl-[50px]
                      shadow-[-20px_0_40px_rgba(0,0,0,0.25)]
                      z-10
                   "

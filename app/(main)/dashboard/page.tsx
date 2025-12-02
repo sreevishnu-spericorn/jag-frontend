@@ -20,7 +20,9 @@ const Dashboard = async () => {
    ]);
 
    const monthlySales = Array(12).fill(0);
+
    paymentData.payments.forEach((p: any) => {
+      console.log(p);
       const monthIndex = new Date(p.createdAt).getMonth();
       monthlySales[monthIndex] += p.amount;
    });
@@ -31,6 +33,11 @@ const Dashboard = async () => {
       statusCounts[key] = (statusCounts[key] || 0) + 1;
    });
 
+   const totalSalesAmount = paymentData.payments.reduce(
+      (acc: number, p: any) => acc + p.amount,
+      0
+   );
+
    return (
       <div className="flex min-h-screen font-sans overflow-hidden">
          <div className="flex-1 h-screen overflow-hidden flex relative shadow-[-20px_0_40px_rgba(0,0,0,0.2)]">
@@ -38,7 +45,7 @@ const Dashboard = async () => {
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                   <StatCard
                      title="Total Sales"
-                     value={paymentData.pagination.total}
+                     value={`$${totalSalesAmount.toLocaleString()}`}
                      icon={WidgetIcons.Sales}
                   />
                   <StatCard
@@ -105,7 +112,6 @@ const Dashboard = async () => {
                </div>
             </div>
 
-            {/* Sales by Site */}
             <div className="mb-8">
                <div className="flex justify-between items-center mb-4">
                   <h3 className="text-base font-bold text-slate-800">
